@@ -6,6 +6,7 @@ import './providers/products.dart';
 import './providers/cart.dart';
 import './providers/orders.dart';
 import './screens/cart_screen.dart';
+import './screens/order_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,14 +31,15 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'MyShop',
         theme: ThemeData(
-          primaryColor: Colors.red,
-          accentColor: Colors.yellow,
+          primaryColor: Color.fromARGB(255, 60, 39, 176),
+          accentColor: Color.fromARGB(255, 178, 9, 71),
           fontFamily: 'Lato',
         ),
         home: ProductOverview(),
         routes: {
           ProductsDetailScreen.routeName: (ctx) => ProductsDetailScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
+          OrderScreen.routeName: (ctx) => OrderScreen(),
         },
       ),
     );

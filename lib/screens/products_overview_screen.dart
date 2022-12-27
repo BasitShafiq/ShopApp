@@ -5,7 +5,7 @@ import 'package:shopping/screens/cart_screen.dart';
 import '../widgets/product_item.dart';
 import '../widgets/product_Grid.dart';
 import '../widgets/badge.dart';
-
+import '../widgets/app_drawer.dart';
 enum FilterOPtions { showAll, ShowFavourities }
 
 class ProductOverview extends StatefulWidget {
@@ -63,6 +63,7 @@ class _ProductOverviewState extends State<ProductOverview> {
           "Amazon",
         ),
       ),
+      drawer: AppDrawer(),
       body: ProductGrid(_showFavourities),
     );
   }
