@@ -27,7 +27,7 @@ class ProductItems extends StatelessWidget {
                 icon: Icon(
                   product.isFavourite ? Icons.favorite : Icons.favorite_border,
                 ),
-                color: Color.fromARGB(255, 178, 9, 7),
+                color: Color.fromARGB(255, 221, 255, 3),
                 onPressed: () {
                   product.toggleFavourite();
                 },
@@ -42,6 +42,21 @@ class ProductItems extends StatelessWidget {
                 product.title,
                 product.price,
               );
+              Scaffold.of(context).hideCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: const Text(
+                  "Added to cart!",
+                ),
+                duration: Duration(
+                  seconds: 3,
+                ),
+                action: SnackBarAction(
+                  label: "Undo",
+                  onPressed: () {
+                    cart.DeleteItemFromCart(product.id);
+                  },
+                ),
+              ));
             },
             color: Theme.of(context).accentColor,
           ),

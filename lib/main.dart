@@ -7,6 +7,8 @@ import './providers/cart.dart';
 import './providers/orders.dart';
 import './screens/cart_screen.dart';
 import './screens/order_screen.dart';
+import './screens/user_product_screen.dart';
+import './screens/edit_Products_Screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
         title: 'MyShop',
         theme: ThemeData(
           primaryColor: Color.fromARGB(255, 60, 39, 176),
-          accentColor: Color.fromARGB(255, 178, 9, 71),
+          accentColor: Color.fromARGB(255, 221, 255, 3),
           fontFamily: 'Lato',
         ),
         home: ProductOverview(),
@@ -40,6 +42,8 @@ class MyApp extends StatelessWidget {
           ProductsDetailScreen.routeName: (ctx) => ProductsDetailScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
           OrderScreen.routeName: (ctx) => OrderScreen(),
+          UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+          EditUserProductScreen.routeName: (ctx) => EditUserProductScreen(),
         },
       ),
     );
