@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../providers/product.dart';
+import 'package:provider/provider.dart';
+import '../providers/products.dart';
 
 class EditUserProductScreen extends StatefulWidget {
   static const routeName = '/edit-products';
@@ -15,6 +17,13 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
   final _form = GlobalKey<FormState>();
   var _myProduct =
       Product(id: '', title: '', description: '', price: 0.0, imageUrl: '');
+  var _isinitValue = true;
+  var editProductValues = {
+    'title': '',
+    'description': '',
+    'price': '',
+    'imageUrl': '',
+  };
   @override
   void dispose() {
     _priceFocusNode.dispose();
@@ -29,6 +38,26 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    if (_isinitValue) {
+      final editProductId =
+          ModalRoute.of(context)!.settings.arguments as String;
+      if (editProductId != null) {
+        _myProduct = Provider.of<Products>(context).findById(editProductId);
+        editProductValues = {
+          'title': _myProduct.title,
+          'description': _myProduct.description,
+          'price': _myProduct.price.toString(),
+          'imageUrl': _myProduct.imageUrl,
+        };
+        _imageController.text = _myProduct.imageUrl;
+      }
+    }
+    _isinitValue = false;
+    super.didChangeDependencies();
+  }
+
   void UpdateImageUrl() {
     if (!_imgFocusNode.hasFocus) {
       setState(() {});
@@ -39,7 +68,13 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
     bool valid = _form.currentState!.validate();
     if (!valid) return;
     _form.currentState!.save();
-    print(_myProduct.title);
+    if (_myProduct.id != '') {
+      Provider.of<Products>(context, listen: false)
+          .updateProduct(_myProduct.id, _myProduct);
+    } else {
+      Provider.of<Products>(context, listen: false).addProducts(_myProduct);
+    }
+    Navigator.of(context).pop();
   }
 
   @override
@@ -62,6 +97,7 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
             child: ListView(
               children: <Widget>[
                 TextFormField(
+                  initialValue: editProductValues['title'],
                   decoration: InputDecoration(
                     label: Text("Title"),
                   ),
@@ -76,15 +112,18 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                   },
                   onSaved: (value) {
                     _myProduct = Product(
-                        id: '',
-                        title: value!,
-                        description: _myProduct.description,
-                        price: _myProduct.price,
-                        imageUrl: _myProduct.imageUrl);
+                      title: value!,
+                      description: _myProduct.description,
+                      price: _myProduct.price,
+                      imageUrl: _myProduct.imageUrl,
+                      id: _myProduct.id,
+                      isFavourite: _myProduct.isFavourite,
+                    );
                   },
                   textInputAction: TextInputAction.next,
                 ),
                 TextFormField(
+                  initialValue: editProductValues['price'],
                   decoration: InputDecoration(
                     label: Text("Price"),
                   ),
@@ -104,16 +143,19 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                   },
                   onSaved: (value) {
                     _myProduct = Product(
-                        id: '',
-                        title: _myProduct.title,
-                        description: _myProduct.description,
-                        price: double.parse(value!),
-                        imageUrl: _myProduct.imageUrl);
+                      title: _myProduct.title,
+                      description: _myProduct.description,
+                      price: double.parse(value!),
+                      imageUrl: _myProduct.imageUrl,
+                      id: _myProduct.id,
+                      isFavourite: _myProduct.isFavourite,
+                    );
                   },
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                 ),
                 TextFormField(
+                    initialValue: editProductValues['description'],
                     decoration: InputDecoration(
                       label: Text("Description"),
                     ),
@@ -129,7 +171,8 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                     keyboardType: TextInputType.multiline,
                     onSaved: (value) {
                       _myProduct = Product(
-                          id: '',
+                          id: _myProduct.id,
+                          isFavourite: _myProduct.isFavourite,
                           title: _myProduct.title,
                           description: value!,
                           price: _myProduct.price,
@@ -179,7 +222,8 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                         },
                         onSaved: (value) {
                           _myProduct = Product(
-                              id: '',
+                              id: _myProduct.id,
+                              isFavourite: _myProduct.isFavourite,
                               title: _myProduct.title,
                               description: _myProduct.description,
                               price: _myProduct.price,

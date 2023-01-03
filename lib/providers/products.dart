@@ -44,11 +44,31 @@ class Products extends ChangeNotifier {
     return _items.where((element) => element.isFavourite).toList();
   }
 
-  void addProducts() {
+  void addProducts(Product product) {
+    final addedProduct = Product(
+      title: product.title,
+      description: product.description,
+      imageUrl: product.imageUrl,
+      price: product.price,
+      id: DateTime.now().toString(),
+    );
+    _items.add(product);
     notifyListeners();
   }
 
-  Product findById(String ID) {
-    return _items.firstWhere((element) => element.id == ID);
+  Product findById(String Id) {
+    return _items.firstWhere((element) => element.id == Id);
+  }
+
+  void updateProduct(String Id, Product product) {
+    final index = _items.indexWhere((element) => element.id == Id);
+    _items[index] = product;
+    notifyListeners();
+  }
+  void deleteProduct(String id)
+  {
+    final index = _items.indexWhere((element) => element.id == id);
+    _items.removeAt(index);
+    notifyListeners();
   }
 }
