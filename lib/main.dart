@@ -33,8 +33,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'MyShop',
         theme: ThemeData(
-          primaryColor: Color.fromARGB(228, 167, 36, 233),
-          accentColor: Colors.red,
+          primaryColor: Color.fromARGB(225, 15, 211, 162),
+          accentColor: Color.fromARGB(255, 180, 25, 5),
           fontFamily: 'Lato',
         ),
         home: ProductOverview(),

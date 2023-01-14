@@ -9,7 +9,6 @@ class ProductItems extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context);
     final cart = Provider.of<Cart>(context, listen: false);
-
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -27,7 +26,7 @@ class ProductItems extends StatelessWidget {
                 icon: Icon(
                   product.isFavourite ? Icons.favorite : Icons.favorite_border,
                 ),
-                color: Colors.red,
+                color: Color.fromARGB(255, 180, 25, 5),
                 onPressed: () {
                   product.toggleFavourite();
                 },

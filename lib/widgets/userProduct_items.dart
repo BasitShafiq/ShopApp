@@ -12,9 +12,9 @@ class UserProductItem extends StatelessWidget {
   String title;
   UserProductItem(
       {required this.id, required this.title, required this.srcImage});
-
   @override
   Widget build(BuildContext context) {
+    final snackBarCtx = Scaffold.of(context);
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(srcImage),
@@ -35,7 +35,20 @@ class UserProductItem extends StatelessWidget {
             ),
             IconButton(
               onPressed: () {
-                Provider.of<Products>(context, listen: false).deleteProduct(id);
+                Provider.of<Products>(context, listen: false)
+                    .deleteProduct(id)
+                    .catchError(
+                      (value) => snackBarCtx.showSnackBar(
+                        SnackBar(
+                          content: const Text(
+                            "Cannot Be Deleted!",
+                          ),
+                          duration: Duration(
+                            seconds: 3,
+                          ),
+                        ),
+                      ),
+                    );
               },
               icon: Icon(
                 Icons.delete,
