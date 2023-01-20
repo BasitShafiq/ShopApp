@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shopping/providers/cart.dart';
 import 'package:shopping/providers/products.dart';
 import 'package:shopping/screens/cart_screen.dart';
+import 'package:shopping/screens/splash_screen.dart';
 import '../widgets/product_item.dart';
 import '../widgets/product_Grid.dart';
 import '../widgets/badge.dart';
@@ -11,6 +12,7 @@ import '../widgets/app_drawer.dart';
 enum FilterOPtions { showAll, ShowFavourities }
 
 class ProductOverview extends StatefulWidget {
+  static const routeName = '/Product-Overview';
   @override
   State<ProductOverview> createState() => _ProductOverviewState();
 }
@@ -95,11 +97,7 @@ class _ProductOverviewState extends State<ProductOverview> {
       ),
       drawer: AppDrawer(),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).primaryColor,
-              ),
-            )
+          ? SplashScreen()
           : ProductGrid(_showFavourities),
     );
   }

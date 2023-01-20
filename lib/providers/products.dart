@@ -47,12 +47,21 @@ class Products extends ChangeNotifier {
     return _items.where((element) => element.isFavourite).toList();
   }
 
+  final String? userToken;
+  final String? userId;
+  Products(this.userToken, this.userId, this._items);
+
   Future<void> fetchProducts() async {
-    const url =
-        'https://shopapp-34812-default-rtdb.firebaseio.com/products.json';
+    var url =
+        'https://shopapp-34812-default-rtdb.firebaseio.com/products.json?auth=$userToken';
+
     try {
       final response = await http.get(Uri.parse(url));
       final productData = json.decode(response.body) as Map<String, dynamic>;
+      url =
+          'https://shopapp-34812-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$userToken';
+      final favouriteRespons = await http.get(Uri.parse(url));
+      final favouriteData = json.decode(favouriteRespons.body);
       final List<Product> listOfProduct = [];
       productData.forEach(
         (key, value) {
@@ -63,7 +72,8 @@ class Products extends ChangeNotifier {
               description: value['description'],
               price: value['price'],
               imageUrl: value['imageUrl'],
-              isFavourite: value['isFavourite'],
+              isFavourite:
+                  favouriteData == null ? false : favouriteData[key] ?? false,
             ),
           );
         },
@@ -76,8 +86,8 @@ class Products extends ChangeNotifier {
   }
 
   Future<void> addProducts(Product product) async {
-    const url =
-        'https://shopapp-34812-default-rtdb.firebaseio.com/products.json';
+    final url =
+        'https://shopapp-34812-default-rtdb.firebaseio.com/products.json?auth=$userToken';
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -87,7 +97,6 @@ class Products extends ChangeNotifier {
             'description': product.description,
             'imageUrl': product.imageUrl,
             'price': product.price,
-            'isFavourite': product.isFavourite,
           },
         ),
       );
@@ -115,7 +124,7 @@ class Products extends ChangeNotifier {
     final index = _items.indexWhere((element) => element.id == Id);
     if (index >= 0) {
       final url =
-          'https://shopapp-34812-default-rtdb.firebaseio.com/products/$Id.json';
+          'https://shopapp-34812-default-rtdb.firebaseio.com/products/$Id.json?auth=$userToken';
       try {
         await http.patch(
           Uri.parse(url),
@@ -137,7 +146,7 @@ class Products extends ChangeNotifier {
   Future<void> deleteProduct(String id) async {
     final index = _items.indexWhere((element) => element.id == id);
     final url =
-        'https://shopapp-34812-default-rtdb.firebaseio.com/products/$id.json';
+        'https://shopapp-34812-default-rtdb.firebaseio.com/products/$id.json?=auth$userToken';
     Product? tempProduct = _items[index];
     _items.removeAt(index);
     notifyListeners();
