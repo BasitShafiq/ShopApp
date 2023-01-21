@@ -51,9 +51,11 @@ class Products extends ChangeNotifier {
   final String? userId;
   Products(this.userToken, this.userId, this._items);
 
-  Future<void> fetchProducts() async {
+  Future<void> fetchProducts([bool filter = false]) async {
+    var filterurl = filter ? 'orderBy="createrId"&equalTo="$userId"' : '';
+
     var url =
-        'https://shopapp-34812-default-rtdb.firebaseio.com/products.json?auth=$userToken';
+        'https://shopapp-34812-default-rtdb.firebaseio.com/products.json?auth=$userToken&';
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -97,6 +99,7 @@ class Products extends ChangeNotifier {
             'description': product.description,
             'imageUrl': product.imageUrl,
             'price': product.price,
+            'createrId': userId,
           },
         ),
       );
