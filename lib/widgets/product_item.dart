@@ -30,7 +30,7 @@ class ProductItems extends StatelessWidget {
                 ),
                 color: Color.fromARGB(255, 206, 187, 12),
                 onPressed: () {
-                  product.toggleFavourite(userId.getUserId, userId.getToken);
+                  product.toggleFavourite(userId.getUserId!, userId.getToken);
                 },
               );
             },

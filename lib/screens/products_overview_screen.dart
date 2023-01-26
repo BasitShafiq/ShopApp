@@ -13,6 +13,7 @@ enum FilterOPtions { showAll, ShowFavourities }
 
 class ProductOverview extends StatefulWidget {
   static const routeName = '/Product-Overview';
+  bool isMount = true;
   @override
   State<ProductOverview> createState() => _ProductOverviewState();
 }
@@ -23,28 +24,30 @@ class _ProductOverviewState extends State<ProductOverview> {
   var _isLoading = false;
 
   @override
-  void initState() {
-    // Provider.of<Products>(context).fetchAndSetProducts(); // WON'T WORK!
-    // Future.delayed(Duration.zero).then((_) {
-    //   Provider.of<Products>(context).fetchAndSetProducts();
-    // });
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     if (_isInit) {
-      setState(() {
-        _isLoading = true;
-      });
-      Provider.of<Products>(context).fetchProducts().then((res) {
+      if (widget.isMount) {
         setState(() {
-          _isLoading = false;
+          _isLoading = true;
         });
+      }
+      Provider.of<Products>(context).fetchProducts().then((res) {
+        if (widget.isMount) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       });
     }
     _isInit = false;
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    widget.isMount = false;
+    super.dispose();
   }
 
   @override
@@ -57,13 +60,15 @@ class _ProductOverviewState extends State<ProductOverview> {
         actions: <Widget>[
           PopupMenuButton(
             onSelected: (FilterOPtions selected) {
-              setState(() {
-                if (selected == FilterOPtions.ShowFavourities) {
-                  _showFavourities = true;
-                } else {
-                  _showFavourities = false;
-                }
-              });
+              if (widget.isMount) {
+                setState(() {
+                  if (selected == FilterOPtions.ShowFavourities) {
+                    _showFavourities = true;
+                  } else {
+                    _showFavourities = false;
+                  }
+                });
+              }
             },
             icon: Icon(Icons.more_vert),
             itemBuilder: (_) => [
@@ -96,9 +101,7 @@ class _ProductOverviewState extends State<ProductOverview> {
         ),
       ),
       drawer: AppDrawer(),
-      body: _isLoading
-          ? SplashScreen()
-          : ProductGrid(_showFavourities),
+      body: _isLoading ? SplashScreen() : ProductGrid(_showFavourities),
     );
   }
 }

@@ -245,10 +245,6 @@ class _EditUserProductScreenState extends State<EditUserProductScreen> {
                                 else if (!value.startsWith("http") &&
                                     !value.startsWith("https"))
                                   return "Please enter valid URL";
-                                else if (!value.endsWith("jpg") &&
-                                    !value.endsWith("png") &&
-                                    !value.endsWith("jpeg"))
-                                  return "Please enter valid URL";
                                 return null;
                               },
                               onSaved: (value) {

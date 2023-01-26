@@ -11,28 +11,28 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Color.fromARGB(255, 247, 249, 249),
         body: SizedBox(
-      width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image(
-            image: AssetImage('images/1.png'),
-            width: 350,
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image(
+                image: AssetImage('images/1.png'),
+                width: 350,
+              ),
+              SizedBox(
+                width: 60,
+                child: SpinKitPouringHourGlassRefined(
+                  color: Colors.orange,
+                  size: 50.0,
+                ),
+              ),
+            ],
           ),
-          SizedBox(
-            width: 60,
-            child: SpinKitSquareCircle(
-              color: Colors.orange,
-              size: 50.0,
-            ),
-          ),
-        ],
-      ),
-    ));
+        ));
   }
 }

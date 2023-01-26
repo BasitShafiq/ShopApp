@@ -55,7 +55,7 @@ class Products extends ChangeNotifier {
     var filterurl = filter ? 'orderBy="createrId"&equalTo="$userId"' : '';
 
     var url =
-        'https://shopapp-34812-default-rtdb.firebaseio.com/products.json?auth=$userToken&';
+        'https://shopapp-34812-default-rtdb.firebaseio.com/products.json?auth=$userToken&$filterurl';
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -149,7 +149,7 @@ class Products extends ChangeNotifier {
   Future<void> deleteProduct(String id) async {
     final index = _items.indexWhere((element) => element.id == id);
     final url =
-        'https://shopapp-34812-default-rtdb.firebaseio.com/products/$id.json?=auth$userToken';
+        'https://shopapp-34812-default-rtdb.firebaseio.com/products/$id.json?auth=$userToken';
     Product? tempProduct = _items[index];
     _items.removeAt(index);
     notifyListeners();

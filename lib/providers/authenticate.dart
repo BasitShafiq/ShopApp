@@ -1,22 +1,27 @@
+import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:shopping/screens/user_product_screen.dart';
 import 'dart:convert';
 import '../models/deleteException.dart';
 
 class Authenticator with ChangeNotifier {
   late String? token = null;
-  late DateTime expiryTime;
-  late String userId;
-  bool isAuth() {
+  late DateTime? expiryTime;
+  late String? userId;
+  late Timer? authTimer = null;
+  bool get isAuth {
     if (getToken != null) {
       print("User is Authenticated!");
       return true;
     }
+    print("Loggog Out");
     return false;
   }
 
-  String get getUserId {
+  String? get getUserId {
     return userId;
   }
 
@@ -24,7 +29,7 @@ class Authenticator with ChangeNotifier {
     print("Token return");
     if (token != null &&
         expiryTime != null &&
-        expiryTime.isAfter(DateTime.now())) {
+        expiryTime!.isAfter(DateTime.now())) {
       return token;
     }
     return null;
@@ -57,6 +62,14 @@ class Authenticator with ChangeNotifier {
           seconds: int.parse(res['expiresIn']),
         ),
       );
+      autoLogOut();
+      final pref = await SharedPreferences.getInstance();
+      final data = json.encode({
+        'userToken': token,
+        'userId': userId,
+        'expiryTime': expiryTime!.toIso8601String()
+      });
+      pref.setString('UserData', data);
       notifyListeners();
     } catch (error) {
       throw error;
@@ -86,9 +99,57 @@ class Authenticator with ChangeNotifier {
           seconds: int.parse(res['expiresIn']),
         ),
       );
+      autoLogOut();
+      final pref = await SharedPreferences.getInstance();
+      final data = json.encode({
+        'userToken': token,
+        'userId': userId,
+        'expiryTime': expiryTime!.toIso8601String()
+      });
+      pref.setString('UserData', data);
       notifyListeners();
     } catch (error) {
       throw error;
     }
+  }
+
+  Future<bool> autoLogin() async {
+    final pref = await SharedPreferences.getInstance();
+    if (!pref.containsKey('UserData')) {
+      return false;
+    }
+    final data = pref.getString('UserData');
+    final extractedData = json.decode(data!);
+    final exp = DateTime.parse(extractedData['expiryTime']);
+    if (exp.isBefore(DateTime.now())) {
+      return false;
+    }
+    token = extractedData['userToken'];
+    userId = extractedData['userId'];
+    expiryTime = exp;
+    notifyListeners();
+    autoLogOut();
+    return true;
+  }
+
+  Future<void> logOut() async {
+    userId = null;
+    token = null;
+    expiryTime = null;
+    if (authTimer != null) {
+      authTimer!.cancel();
+      authTimer = null;
+    }
+    final pref = await SharedPreferences.getInstance();
+    pref.clear();
+    notifyListeners();
+  }
+
+  void autoLogOut() {
+    if (authTimer != null) {
+      authTimer!.cancel();
+    }
+    final expTime = expiryTime!.difference(DateTime.now()).inSeconds;
+    authTimer = Timer(Duration(seconds: expTime), logOut);
   }
 }
